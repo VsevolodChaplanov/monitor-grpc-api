@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package item_service;
+
+service ItemService {
+  // Add new item
+  rpc AddItem (AddItemRequest) returns (AddItemResponse);
+  
+  // Get item info by id
+  rpc GetItem (GetItemRequest) returns (GetItemResponse);
+  
+  // Update price by id or sku
+  rpc UpdatePrice (UpdatePriceRequest) returns (UpdatePriceResponse);
+}
+
+// Add new item request
+message AddItemRequest {
+  string sku = 1;       // item Item
+  string url = 2;       // item price
+  float price = 3;      // item price
+}
+
+// Add new item response
+message AddItemResponse {
+  string id = 1; // Id of added item or existed one
+}
+
+// Get item info request
+message GetItemRequest {
+  string id = 1; // ID артикула
+}
+
+// Item info
+message GetItemResponse {
+  string id = 1;      // Item id
+  string item = 2;    // SKU
+  string url = 3;     // Item URL
+  float price = 4;    // item price
+}
+
+// Update price request
+message UpdatePriceRequest {
+  oneof identifier {
+    string id = 1;      // Item ID
+    string sku = 2;     // Item sku
+  }
+  float new_price = 3;  // Price to update
+}
+
+// Price update status
+enum OperationStatus {
+  SUCCESS = 0;          // Операция выполнена успешно
+  NOT_FOUND = 1;        // Запись не найдена
+  INVALID_INPUT = 2;    // Некорректные входные данные
+  INTERNAL_ERROR = 3;   // Внутренняя ошибка сервера
+}
+
+// Update price response
+message UpdatePriceResponse {
+  OperationStatus  success = 1;   // Operation status
+  string message = 2;             // Custom message about operation
+}
